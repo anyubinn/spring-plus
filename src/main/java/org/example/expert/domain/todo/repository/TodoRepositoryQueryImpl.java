@@ -64,7 +64,7 @@ public class TodoRepositoryQueryImpl implements TodoRepositoryQuery {
                 .leftJoin(manager.user, user)
                 .leftJoin(todo.comments, comment)
                 .groupBy(todo.id)
-                .orderBy(todo.modifiedAt.desc())
+                .orderBy(todo.createdAt.desc())
                 .fetch();
 
         Long total = queryFactory
@@ -91,7 +91,7 @@ public class TodoRepositoryQueryImpl implements TodoRepositoryQuery {
     private BooleanExpression startDateGte(LocalDateTime startDate) {
 
         if (startDate != null) {
-            return todo.modifiedAt.goe(startDate);
+            return todo.createdAt.goe(startDate);
         }
 
         return null;
@@ -100,7 +100,7 @@ public class TodoRepositoryQueryImpl implements TodoRepositoryQuery {
     private BooleanExpression endDateLte(LocalDateTime endDate) {
 
         if (endDate != null) {
-            return todo.modifiedAt.loe(endDate);
+            return todo.createdAt.loe(endDate);
         }
 
         return null;

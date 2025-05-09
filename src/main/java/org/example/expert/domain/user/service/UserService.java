@@ -1,5 +1,6 @@
 package org.example.expert.domain.user.service;
 
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.example.expert.config.PasswordEncoder;
 import org.example.expert.domain.common.exception.InvalidRequestException;
@@ -22,6 +23,12 @@ public class UserService {
 
     public UserResponse getUser(long userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new InvalidRequestException("User not found"));
+        return new UserResponse(user.getId(), user.getEmail());
+    }
+
+    public UserResponse findByNickname(String nickname) {
+
+        User user = userRepository.findByNickname(nickname).orElseThrow(() -> new InvalidRequestException("User not found"));
         return new UserResponse(user.getId(), user.getEmail());
     }
 

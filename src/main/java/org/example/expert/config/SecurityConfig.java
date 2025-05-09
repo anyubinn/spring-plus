@@ -16,17 +16,17 @@ public class SecurityConfig {
 
     private final JwtUtil jwtUtil;
 
-    private static final String[] AUTH_WHITELIST = {"/auth/signup", "/auth/signin"};
+    private static final String[] AUTH_WHITELIST = {
+            "/auth/signup", "/auth/signin", "/health", "/users"
+    };
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
-
-        return httpSecurity
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        return http
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(AUTH_WHITELIST).permitAll()
-                        .requestMatchers("/health").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated())
                 .addFilterBefore(new JwtFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class)

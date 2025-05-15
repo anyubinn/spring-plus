@@ -11,6 +11,7 @@ import org.example.expert.domain.todo.entity.Todo
 import org.example.expert.domain.todo.repository.TodoRepository
 import org.example.expert.domain.user.dto.response.UserResponse
 import org.example.expert.domain.user.entity.User
+import org.example.expert.domain.user.repository.UserRepository
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
@@ -21,13 +22,14 @@ import java.time.LocalDateTime
 @Service
 @Transactional(readOnly = true)
 class TodoService(
+    private val userRepository: UserRepository,
     private val todoRepository: TodoRepository,
     private val weatherClient: WeatherClient
 ) {
 
     @Transactional
     fun saveTodo(authUser: AuthUser, todoSaveRequest: TodoSaveRequest): TodoSaveResponse {
-        val user = User.fromAuthUser(authUser)
+        val user = userRepository.findById(authUser.id).orElseThrow { InvalidRequestException("User not found") }
 
         val weather = weatherClient.todayWeather
 
@@ -44,7 +46,7 @@ class TodoService(
             savedTodo.title,
             savedTodo.contents,
             weather,
-            UserResponse(user.id, user.email)
+            UserResponse(user.id!!, user.email)
         )
     }
 
@@ -65,9 +67,9 @@ class TodoService(
                 todo.title,
                 todo.contents,
                 todo.weather,
-                UserResponse(todo.user.id, todo.user.email),
-                todo.createdAt,
-                todo.modifiedAt
+                UserResponse(todo.user.id!!, todo.user.email),
+                todo.createdAt!!,
+                todo.modifiedAt!!
             )
         }
     }
@@ -92,9 +94,9 @@ class TodoService(
             todo.title,
             todo.contents,
             todo.weather,
-            UserResponse(user.id, user.email),
-            todo.createdAt,
-            todo.modifiedAt
+            UserResponse(user.id!!, user.email),
+            todo.createdAt!!,
+            todo.modifiedAt!!
         )
     }
 }

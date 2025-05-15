@@ -12,8 +12,8 @@ class Todo(
     val title: String,
     val contents: String,
     val weather: String,
-    @field:JoinColumn(name = "user_id", nullable = false)
-    @field:ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
     val user: User
 ) : Timestamped() {
     @Id
